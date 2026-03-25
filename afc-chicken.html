@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFC Chicken — Crispy. Juicy. Irresistible.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --gold: #FFB700;
+  --gold-light: #FFD460;
+  --red: #E8192C;
+  --orange: #FF6B00;
+  --orange-warm: #FF8C42;
+  --dark: #0A0703;
+  --dark2: #120E05;
+  --dark3: #1A1408;
+  --panel: rgba(20,15,5,0.85);
+  --glass: rgba(255,183,0,0.07);
+  --glass-border: rgba(255,183,0,0.18);
+  --text: #F5E6C8;
+  --text-muted: #9A8060;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.1s, opacity 0.2s;
+  mix-blend-mode: screen;
+}
+.cursor-follower {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(255,183,0,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: all 0.18s ease;
+}
+
+/* SCROLL PROGRESS */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red), var(--gold), var(--orange));
+  z-index: 10000;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--gold);
+}
+
+/* LOADING SCREEN */
+#loader {
+  position: fixed; inset: 0;
+  background: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99997;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; }
+.loader-chicken {
+  font-size: 72px;
+  animation: chickenSpin 1.2s linear infinite;
+  filter: drop-shadow(0 0 20px var(--gold));
+}
+@keyframes chickenSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.loader-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  margin-top: 20px;
+  animation: pulse 1s ease-in-out infinite;
+}
+.loader-bar {
+  width: 200px; height: 3px;
+  background: var(--dark3);
+  border-radius: 2px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  animation: loadFill 2s ease forwards;
+  border-radius: 2px;
+}
+@keyframes loadFill { from { width: 0; } to { width: 100%; } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9000;
+  padding: 0 6%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,7,3,0.0);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+  transition: all 0.4s ease;
+}
+nav.scrolled {
+  background: rgba(10,7,3,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  cursor: none;
+}
+.nav-logo span { color: var(--red); -webkit-text-fill-color: var(--red); }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+  cursor: none;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1.5px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.nav-login-btn {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  padding: 8px 22px;
+  border-radius: 50px;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  cursor: none;
+}
+.nav-login-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(232,25,44,0.4) !important;
+}
+.nav-login-btn::after { display: none !important; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; }
+.hamburger span { width: 26px; height: 2px; background: var(--gold); border-radius: 2px; transition: 0.3s; }
+
+/* HERO */
+#hero {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, #2a1a00 0%, #0f0a02 50%, #000 100%);
+  z-index: 0;
+}
+.hero-bg-parallax {
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232,25,44,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(255,183,0,0.08) 0%, transparent 70%);
+  z-index: 0;
+  will-change: transform;
+}
+/* PARTICLES */
+.particles-container {
+  position: absolute; inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle linear infinite;
+}
+@keyframes floatParticle {
+  0% { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0); }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-20vh) rotate(720deg) scale(1.5); }
+}
+/* GRID OVERLAY */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,183,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,183,0,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 1;
+}
+/* CHICKEN FIXED */
+.chicken-wrapper {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: min(500px, 70vw);
+  height: min(500px, 70vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chicken-glow {
+  position: absolute; inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,140,0,0.22) 0%, rgba(255,107,0,0.1) 40%, transparent 70%);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100%{ transform: scale(1); opacity: 1; }
+  50%{ transform: scale(1.1); opacity: 0.7; }
+}
+.chicken-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 40px rgba(255,140,0,0.6)) drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+  animation: chickenFloat 4s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+@keyframes chickenFloat {
+  0%,100%{ transform: translateY(0px) rotate(-1deg); }
+  50%{ transform: translateY(-18px) rotate(1deg); }
+}
+/* STEAM SVG */
+.steam-container {
+  position: absolute;
+  bottom: 100%; left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  z-index: 3;
+}
+.steam-line {
+  position: absolute;
+  bottom: 0;
+  width: 8px;
+  border-radius: 50px;
+  background: linear-gradient(to top, rgba(255,220,120,0.6), rgba(255,255,255,0.1), transparent);
+  animation: steamRise 2.5s ease-in-out infinite;
+  filter: blur(3px);
+}
+.steam-line:nth-child(1) { left: 30%; height: 60px; animation-delay: 0s; }
+.steam-line:nth-child(2) { left: 50%; height: 80px; animation-delay: 0.5s; }
+.steam-line:nth-child(3) { left: 70%; height: 50px; animation-delay: 1s; }
+.steam-line:nth-child(4) { left: 20%; height: 40px; animation-delay: 1.5s; }
+.steam-line:nth-child(5) { left: 60%; height: 70px; animation-delay: 0.8s; }
+@keyframes steamRise {
+  0%{ transform: translateY(0) scaleX(1); opacity: 0.8; }
+  50%{ transform: translateY(-40px) scaleX(1.5) translateX(5px); opacity: 0.4; }
+  100%{ transform: translateY(-90px) scaleX(0.5) translateX(-5px); opacity: 0; }
+}
+/* HERO TEXT */
+.hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+.hero-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.2s forwards;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 11vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.4s forwards;
+}
+.hero-title .line1 { display: block; color: var(--text); }
+.hero-title .line2 { display: block; color: var(--gold); text-shadow: 0 0 40px rgba(255,183,0,0.5); }
+.hero-title .line3 { display: block; color: var(--red); text-shadow: 0 0 40px rgba(232,25,44,0.5); }
+.hero-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 20px;
+  margin-bottom: 40px;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.6s forwards;
+}
+.hero-btns {
+  display: flex; gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 2.8s forwards;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  color: white;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: none;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 6px 30px rgba(232,25,44,0.35);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 40px rgba(232,25,44,0.5); }
+.btn-primary:hover::before { opacity: 1; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent;
+  color: var(--gold);
+  padding: 15px 35px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: none;
+  border: 1.5px solid var(--gold);
+  transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.btn-secondary:hover {
+  transform: translateY(-3px) scale(1.04);
+  background: rgba(255,183,0,0.1);
+  box-shadow: 0 12px 40px rgba(255,183,0,0.25);
+}
+@keyframes fadeUp {
+  from{ opacity:0; transform:translateY(30px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+/* hero positioning: text on sides, chicken center */
+.hero-layout {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-text-block {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.hero-title-top {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  pointer-events: auto;
+}
+.hero-title-bottom {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
+/* SECTION COMMONS */
+section { padding: 100px 6%; }
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: block;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.section-title span { color: var(--gold); }
+
+/* OFFERS */
+#offers {
+  background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%);
+  position: relative;
+  overflow: hidden;
+}
+#offers::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,25,44,0.04) 0%, transparent 70%);
+}
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 60px;
+}
+.offer-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform 0.35s, box-shadow 0.35s;
+  opacity: 0;
+  transform: translateY(40px);
+}
+.offer-card.visible { animation: slideUp 0.6s ease forwards; }
+@keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+.offer-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(255,183,0,0.12);
+}
+.offer-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: linear-gradient(135deg, var(--red), #ff4757);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 50px;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(232,25,44,0.4); }
+  50%{ box-shadow: 0 0 0 8px rgba(232,25,44,0); }
+}
+.offer-icon { font-size: 3rem; margin-bottom: 16px; }
+.offer-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.offer-price {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.offer-price span { font-size: 1rem; color: var(--text-muted); text-decoration: line-through; margin-left: 8px; font-weight: 400; }
+.offer-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+.offer-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red), var(--gold), var(--orange));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.offer-card:hover::before { opacity: 1; }
+
+/* MENU */
+#menu {
+  background: var(--dark2);
+  position: relative;
+}
+.menu-filters {
+  display: flex; gap: 12px;
+  flex-wrap: wrap;
+  margin: 40px 0 50px;
+}
+.filter-btn {
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: transparent;
+  border: 1.5px solid rgba(255,183,0,0.2);
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: none;
+  transition: all 0.3s;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  border-color: transparent;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(232,25,44,0.3);
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+.menu-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.35s, box-shadow 0.35s;
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  cursor: none;
+}
+.menu-item.visible { animation: menuAppear 0.6s ease forwards; }
+@keyframes menuAppear { to { opacity:1; transform:translateY(0) scale(1); } }
+.menu-item:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(255,107,0,0.2);
+}
+.menu-img-wrap {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #1a1205, #2a1a05);
+}
+.menu-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  filter: brightness(0.9);
+}
+.menu-item:hover .menu-img-wrap img { transform: scale(1.12); filter: brightness(1.1); }
+.menu-img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,7,3,0.6) 0%, transparent 60%);
+}
+.menu-info { padding: 20px; }
+.menu-tag {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 6px;
+}
+.menu-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.menu-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+.menu-bottom { display: flex; align-items: center; justify-content: space-between; }
+.menu-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.add-cart-btn {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  border: none;
+  color: white;
+  padding: 9px 18px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.add-cart-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.4s, transform 0.4s;
+}
+.add-cart-btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(232,25,44,0.4); }
+.add-cart-btn:active::after { opacity: 1; transform: scale(2); }
+
+/* REVIEWS */
+#reviews {
+  background: linear-gradient(180deg, var(--dark2) 0%, var(--dark) 100%);
+  overflow: hidden;
+}
+.reviews-header { text-align: center; margin-bottom: 60px; }
+.rating-big {
+  display: flex; align-items: center; gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.rating-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.stars-big { font-size: 1.5rem; color: var(--gold); }
+.reviews-carousel {
+  display: flex; gap: 24px;
+  overflow-x: hidden;
+  position: relative;
+}
+.reviews-track {
+  display: flex; gap: 24px;
+  animation: scrollReviews 30s linear infinite;
+  width: max-content;
+}
+.reviews-track:hover { animation-play-state: paused; }
+@keyframes scrollReviews {
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-50%); }
+}
+.review-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 28px;
+  width: 320px;
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(255,183,0,0.1);
+}
+.review-stars { color: var(--gold); font-size: 1rem; margin-bottom: 16px; }
+.review-text {
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+.review-author { display: flex; align-items: center; gap: 12px; }
+.review-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.review-name { font-weight: 600; font-size: 0.9rem; }
+.review-date { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* CONTACT */
+#contact {
+  background: var(--dark);
+  position: relative;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-top: 60px;
+}
+.contact-info h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+.contact-detail {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 20px;
+}
+.contact-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.contact-detail p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.contact-detail strong { color: var(--text); display: block; margin-bottom: 4px; }
+.map-embed {
+  margin-top: 28px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  height: 200px;
+}
+.map-embed iframe { width: 100%; height: 100%; border: none; filter: grayscale(0.8) invert(0.9) hue-rotate(180deg); }
+.contact-form { display: flex; flex-direction: column; gap: 18px; }
+.form-group { position: relative; }
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.form-group input, .form-group textarea {
+  width: 100%;
+  background: var(--glass);
+  border: 1px solid rgba(255,183,0,0.15);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--gold);
+  background: rgba(255,183,0,0.05);
+  box-shadow: 0 0 0 3px rgba(255,183,0,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 120px; }
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(154,128,96,0.6); }
+
+/* LOGIN OVERLAY */
+#login-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
+}
+#login-overlay.open { opacity: 1; visibility: visible; }
+.login-card {
+  background: rgba(18,14,5,0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  padding: 48px 44px;
+  width: min(460px, 92vw);
+  position: relative;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 80px rgba(255,183,0,0.05);
+  transform: scale(0.9) translateY(30px);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+#login-overlay.open .login-card { transform: scale(1) translateY(0); }
+.login-bg-anim {
+  position: absolute; inset: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  z-index: 0;
+}
+.login-bg-anim::before {
+  content: '';
+  position: absolute; inset: -50%;
+  background: conic-gradient(from 0deg, transparent 60%, rgba(255,183,0,0.04) 70%, transparent 80%);
+  animation: loginBgSpin 8s linear infinite;
+}
+@keyframes loginBgSpin { to { transform: rotate(360deg); } }
+.login-content { position: relative; z-index: 1; }
+.login-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.login-sub { text-align: center; color: var(--text-muted); font-size: 0.88rem; margin-bottom: 36px; }
+.login-tabs {
+  display: flex; gap: 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+.login-tab {
+  flex: 1; padding: 10px;
+  border: none; background: transparent;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: none;
+  transition: all 0.3s;
+}
+.login-tab.active {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  color: white;
+}
+.social-login { display: flex; gap: 12px; margin-bottom: 24px; }
+.social-btn {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: none;
+  transition: all 0.3s;
+}
+.social-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,183,0,0.3);
+  transform: translateY(-2px);
+}
+.or-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+  color: var(--text-muted); font-size: 0.8rem;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1;
+  height: 1px;
+  background: rgba(255,183,0,0.15);
+}
+.close-login {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: none;
+  transition: color 0.2s;
+}
+.close-login:hover { color: var(--gold); }
+
+/* FOOTER */
+footer {
+  background: var(--dark2);
+  border-top: 1px solid var(--glass-border);
+  padding: 60px 6% 30px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+.footer-brand p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; margin-top: 12px; max-width: 260px; }
+.footer-social { display: flex; gap: 12px; margin-top: 20px; }
+.social-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: none;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+.social-icon:hover {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  border-color: transparent;
+  color: white;
+  transform: translateY(-3px);
+}
+.footer-col h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; cursor: none; transition: color 0.2s; }
+.footer-col a:hover { color: var(--gold); }
+.footer-bottom {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom p { color: var(--text-muted); font-size: 0.82rem; }
+
+/* ANIMATIONS REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* VIGNETTE */
+.section-vignette {
+  position: relative;
+}
+.section-vignette::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  background: linear-gradient(to bottom, var(--dark2), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Floating food icons */
+.float-icons {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.float-icon {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.12;
+  animation: floatIcon 8s ease-in-out infinite;
+}
+@keyframes floatIcon {
+  0%,100%{ transform: translateY(0) rotate(0deg); }
+  50%{ transform: translateY(-20px) rotate(10deg); }
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+@media(max-width:600px){
+  .footer-top { grid-template-columns: 1fr; }
+  .hero-title { font-size: clamp(3rem, 14vw, 5rem); }
+  section { padding: 70px 5%; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 200px; justify-content: center; }
+}
+@media(min-width:768px){
+  .hero-title-top {
+    top: 8%;
+  }
+}
+
+/* DIVIDER */
+.gold-divider {
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 2px;
+  margin: 16px 0 0;
+  box-shadow: 0 0 12px rgba(255,183,0,0.4);
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-chicken">🍗</div>
+  <div class="loader-text">AFC Chicken</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">AFC <span>Chicken</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#offers">Offers</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" class="nav-login-btn" id="openLogin">Login</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="padding:0;">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-parallax" id="hero-parallax"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Particles -->
+  <div class="particles-container" id="particles"></div>
+
+  <!-- Chicken STATIC CENTER -->
+  <div class="chicken-wrapper" id="chicken-fixed">
+    <div class="chicken-glow"></div>
+    <div class="steam-container">
+      <div class="steam-line"></div>
+      <div class="steam-line"></div>
+      <div class="steam-line"></div>
+      <div class="steam-line"></div>
+      <div class="steam-line"></div>
+    </div>
+    <img class="chicken-img" src="https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&q=90&auto=format&fit=crop" alt="Crispy Fried Chicken" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Fried_chicken_breasts_and_legs_%28cropped%29.jpg/800px-Fried_chicken_breasts_and_legs_%28cropped%29.jpg'">
+  </div>
+
+  <!-- Hero Text Top -->
+  <div class="hero-title-top">
+    <div class="hero-eyebrow">Premium Fast Food Experience</div>
+    <h1 class="hero-title">
+      <span class="line1">Crispy.</span>
+      <span class="line2">Juicy.</span>
+      <span class="line3">Irresistible.</span>
+    </h1>
+  </div>
+
+  <!-- Hero Text Bottom -->
+  <div class="hero-title-bottom">
+    <p class="hero-sub">Flame-kissed perfection in every bite. Made fresh, served hot.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary"><i class="fas fa-shopping-bag"></i> Order Now</a>
+      <a href="#menu" class="btn-secondary"><i class="fas fa-utensils"></i> View Menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section id="offers">
+  <div class="float-icons" id="float-icons"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="section-label reveal">🔥 Hot Deals</span>
+    <h2 class="section-title reveal">Today's <span>Special Offers</span></h2>
+    <div class="gold-divider reveal"></div>
+    <div class="offers-grid">
+      <div class="offer-card">
+        <div class="offer-badge">Limited Time</div>
+        <div class="offer-icon">🪣</div>
+        <div class="offer-title">Family Bucket</div>
+        <div class="offer-price">₹199 <span>₹349</span></div>
+        <div class="offer-desc">10 pieces of golden crispy chicken with 2 dips and a large cold drink.</div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-badge">Best Value</div>
+        <div class="offer-icon">🍔</div>
+        <div class="offer-title">Zinger Combo</div>
+        <div class="offer-price">₹149 <span>₹249</span></div>
+        <div class="offer-desc">Spicy zinger burger + crispy fries + unlimited refill cola. Pure bliss.</div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-badge">Weekend</div>
+        <div class="offer-icon">🍗</div>
+        <div class="offer-title">Wings Party</div>
+        <div class="offer-price">₹249 <span>₹399</span></div>
+        <div class="offer-desc">20 signature buffalo wings with 3 dipping sauces. Perfect for sharing!</div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-badge">New</div>
+        <div class="offer-icon">🥗</div>
+        <div class="offer-title">Snack Box</div>
+        <div class="offer-price">₹99 <span>₹179</span></div>
+        <div class="offer-desc">Popcorn chicken bites, mini coleslaw, garlic bread, and a small drink.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <span class="section-label reveal">Our Specialities</span>
+  <h2 class="section-title reveal">Explore Our <span>Menu</span></h2>
+  <div class="gold-divider reveal"></div>
+  <div class="menu-filters reveal">
+    <button class="filter-btn active" data-filter="all">All Items</button>
+    <button class="filter-btn" data-filter="chicken">🍗 Chicken</button>
+    <button class="filter-btn" data-filter="burger">🍔 Burgers</button>
+    <button class="filter-btn" data-filter="wings">Wings</button>
+    <button class="filter-btn" data-filter="combo">🥡 Combos</button>
+    <button class="filter-btn" data-filter="drink">🥤 Drinks</button>
+  </div>
+  <div class="menu-grid" id="menu-grid">
+    <!-- Items injected by JS -->
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-header">
+    <span class="section-label reveal">Customer Love</span>
+    <h2 class="section-title reveal">What People <span>Are Saying</span></h2>
+    <div class="gold-divider reveal" style="margin: 16px auto 0;"></div>
+    <div class="rating-big reveal">
+      <div class="rating-number">4.9</div>
+      <div>
+        <div class="stars-big">★★★★★</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;">2,400+ Reviews</div>
+      </div>
+    </div>
+  </div>
+  <div class="reviews-carousel">
+    <div class="reviews-track" id="reviews-track"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <span class="section-label reveal">Get In Touch</span>
+  <h2 class="section-title reveal">Contact <span>Us</span></h2>
+  <div class="gold-divider reveal"></div>
+  <div class="contact-grid">
+    <div class="reveal-left">
+      <h3>Visit Us Today</h3>
+      <div class="contact-detail">
+        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div><p><strong>Address</strong>Anna Salai, Triplicane, Chennai - 600005, Tamil Nadu, India</p></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+        <div><p><strong>Phone</strong>+91 98765 43210</p></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+        <div><p><strong>Hours</strong>Mon–Sun: 11:00 AM – 11:30 PM</p></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+        <div><p><strong>Email</strong>hello@afcchicken.in</p></div>
+      </div>
+      <div class="map-embed">
+        <iframe src="https://maps.google.com/maps?q=Anna+Salai+Chennai&t=&z=14&ie=UTF8&iwloc=&output=embed" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <form class="contact-form" onsubmit="return false;">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="e.g. Arjun Kumar">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="arjun@email.com">
+        </div>
+        <div class="form-group">
+          <label>Phone (Optional)</label>
+          <input type="tel" placeholder="+91 00000 00000">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea placeholder="Tell us about your experience, feedback, or inquiry..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="border:none;width:100%;justify-content:center;cursor:none;">
+          <i class="fas fa-paper-plane"></i> Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.8rem;display:block;">AFC <span style="-webkit-text-fill-color:var(--red);">Chicken</span></div>
+      <p>Serving golden crispy happiness since 2015. Every piece is crafted with love, marinated with tradition, and fried to perfection.</p>
+      <div class="footer-social">
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#offers">Offers</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="#">Fried Chicken</a></li>
+        <li><a href="#">Zinger Burgers</a></li>
+        <li><a href="#">Wings</a></li>
+        <li><a href="#">Combos</a></li>
+        <li><a href="#">Beverages</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Franchise</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 AFC Chicken. All rights reserved. Made with ❤️ in Chennai.</p>
+    <p style="color:var(--text-muted);font-size:0.78rem;">🍗 Freshness Guaranteed Every Single Day</p>
+  </div>
+</footer>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-bg-anim"></div>
+    <button class="close-login" id="closeLogin">✕</button>
+    <div class="login-content">
+      <div class="login-logo">AFC Chicken</div>
+      <p class="login-sub">Sign in to your account for exclusive deals</p>
+      <div class="login-tabs">
+        <button class="login-tab active" id="tab-login">Login</button>
+        <button class="login-tab" id="tab-signup">Sign Up</button>
+      </div>
+      <div class="social-login">
+        <button class="social-btn"><i class="fab fa-google" style="color:#EA4335"></i> Google</button>
+        <button class="social-btn"><i class="fab fa-facebook-f" style="color:#1877F2"></i> Facebook</button>
+      </div>
+      <div class="or-divider">or continue with email</div>
+      <form style="display:flex;flex-direction:column;gap:16px;" onsubmit="return false;">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••">
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:-8px;">
+          <a href="#" style="color:var(--gold);font-size:0.82rem;cursor:none;">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-primary" style="border:none;width:100%;justify-content:center;cursor:none;margin-top:4px;">
+          <i class="fas fa-sign-in-alt"></i> <span id="login-btn-text">Login</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursor-follower');
+let mx = 0, my = 0, fx = 0, fy = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+function animFollower() {
+  fx += (mx - fx - 18) * 0.12;
+  fy += (my - fy - 18) * 0.12;
+  follower.style.left = fx + 'px';
+  follower.style.top = fy + 'px';
+  requestAnimationFrame(animFollower);
+}
+animFollower();
+document.querySelectorAll('a,button,.filter-btn,.menu-item,.offer-card,.review-card,.social-btn,.login-tab').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; follower.style.transform = 'scale(1.5)'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; follower.style.transform = 'scale(1)'; });
+});
+
+// LOADER
+window.addEventListener('load', () => {
+  setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 2200);
+});
+
+// SCROLL PROGRESS
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docH = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('scroll-progress').style.width = (scrollTop / docH * 100) + '%';
+  // Navbar scroll
+  document.getElementById('navbar').classList.toggle('scrolled', scrollTop > 50);
+  // Parallax
+  document.getElementById('hero-parallax').style.transform = `translateY(${scrollTop * 0.3}px)`;
+});
+
+// PARTICLES
+(function spawnParticles() {
+  const c = document.getElementById('particles');
+  const spices = ['🌶','✦','·','⬡','●','▪','🔥','✦','⬤','▸'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 6 + 2;
+    const left = Math.random() * 100;
+    const dur = Math.random() * 12 + 8;
+    const delay = Math.random() * 10;
+    const color = ['#FFB700','#FF6B00','#E8192C','#FF8C42','rgba(255,183,0,0.5)'][Math.floor(Math.random()*5)];
+    p.style.cssText = `width:${size}px;height:${size}px;left:${left}%;background:${color};animation-duration:${dur}s;animation-delay:${delay}s;box-shadow:0 0 ${size*2}px ${color};`;
+    c.appendChild(p);
+  }
+})();
+
+// FLOAT ICONS
+(function() {
+  const icons = ['🍗','🍔','🌶','🍟','🥤','🍗','🔥','🧄'];
+  const c = document.getElementById('float-icons');
+  icons.forEach((ic, i) => {
+    const el = document.createElement('div');
+    el.className = 'float-icon';
+    el.textContent = ic;
+    el.style.left = (10 + i * 11) + '%';
+    el.style.top = (Math.random() * 80 + 10) + '%';
+    el.style.animationDelay = (i * 0.8) + 's';
+    el.style.animationDuration = (6 + Math.random() * 4) + 's';
+    c.appendChild(el);
+  });
+})();
+
+// MENU DATA
+const menuItems = [
+  { name: 'Classic Crispy Chicken', tag: 'chicken', price: '₹189', desc: '2-pc golden fried chicken with secret spice blend', img: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400&q=80' },
+  { name: 'Spicy Zinger Burger', tag: 'burger', price: '₹149', desc: 'Fiery crispy fillet, jalapeños, spicy mayo, brioche bun', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' },
+  { name: 'Buffalo Wings (10pc)', tag: 'wings', price: '₹229', desc: 'Tossed in our signature buffalo sauce, served hot', img: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&q=80' },
+  { name: 'Mega Combo Bucket', tag: 'combo', price: '₹499', desc: '6 pc chicken + 2 burgers + lg fries + 2 drinks', img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80' },
+  { name: 'Crispy Chicken Strips', tag: 'chicken', price: '₹169', desc: '5 golden tenders with honey mustard and BBQ sauce', img: 'https://images.unsplash.com/photo-1548340748-6d2b7d7da280?w=400&q=80' },
+  { name: 'Double Smash Burger', tag: 'burger', price: '₹199', desc: 'Two smashed patties, caramelized onions, special sauce', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80' },
+  { name: 'Lemon Iced Tea', tag: 'drink', price: '₹69', desc: 'Freshly brewed, sweet & tangy, served ice cold', img: 'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=400&q=80' },
+  { name: 'Popcorn Chicken', tag: 'chicken', price: '₹119', desc: 'Bite-size crispy pieces with ranch dip. Addictive!', img: 'https://images.unsplash.com/photo-1587409108422-f32e5f00028f?w=400&q=80' },
+];
+
+function renderMenu(filter = 'all') {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = '';
+  menuItems.filter(it => filter === 'all' || it.tag === filter).forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'menu-item';
+    el.style.animationDelay = (i * 0.08) + 's';
+    el.innerHTML = `
+      <div class="menu-img-wrap">
+        <img src="${item.img}" alt="${item.name}" loading="lazy">
+        <div class="menu-img-overlay"></div>
+      </div>
+      <div class="menu-info">
+        <div class="menu-tag">${item.tag.toUpperCase()}</div>
+        <div class="menu-name">${item.name}</div>
+        <div class="menu-desc">${item.desc}</div>
+        <div class="menu-bottom">
+          <div class="menu-price">${item.price}</div>
+          <button class="add-cart-btn" onclick="addToCart('${item.name}')">+ Add to Cart</button>
+        </div>
+      </div>`;
+    grid.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), 100 + i * 80);
+  });
+}
+renderMenu();
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMenu(btn.dataset.filter);
+  });
+});
+
+function addToCart(name) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,#E8192C,#FF6B00);color:white;padding:14px 24px;border-radius:50px;font-size:0.88rem;font-weight:600;z-index:99990;box-shadow:0 8px 30px rgba(232,25,44,0.4);transform:translateY(20px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);`;
+  toast.textContent = `🛒 ${name} added!`;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.transform = 'translateY(0)'; toast.style.opacity = '1'; }, 10);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(20px)'; setTimeout(() => toast.remove(), 400); }, 2500);
+}
+
+// REVIEWS
+const reviews = [
+  { name: 'Priya M.', text: 'Best fried chicken in Chennai! Super crispy outside, juicy inside. The spice level is just perfect. My whole family loved it!', stars: 5, date: 'March 2025' },
+  { name: 'Rajan K.', text: 'The zinger burger is absolutely unreal. Better than any fast food chain I\'ve tried. The sauce combo is chef\'s kiss! 🔥', stars: 5, date: 'Feb 2025' },
+  { name: 'Anita S.', text: 'Ordered the family bucket for a birthday party. Everyone was blown away. Great value for money and fast delivery!', stars: 5, date: 'Jan 2025' },
+  { name: 'Vignesh T.', text: 'I come here every weekend now. The popcorn chicken is addictive. And the staff is so friendly!', stars: 5, date: 'March 2025' },
+  { name: 'Deepa R.', text: 'Honestly the crunchiest chicken I\'ve ever had. The secret spice blend is something else. Total comfort food!', stars: 5, date: 'Feb 2025' },
+  { name: 'Karthik N.', text: 'Buffalo wings are fire! Literally. I love spicy food and these did not disappoint. Highly recommend!', stars: 5, date: 'Jan 2025' },
+  { name: 'Meena L.', text: 'Great ambiance, great food, great price. The lemon iced tea pairs perfectly with the spicy chicken. Perfect combo!', stars: 4, date: 'Dec 2024' },
+  { name: 'Suresh P.', text: 'Tried the mega combo bucket with my team. Absolutely worth every rupee. Will definitely be ordering again.', stars: 5, date: 'March 2025' },
+];
+
+function renderReviews() {
+  const track = document.getElementById('reviews-track');
+  const doubled = [...reviews, ...reviews];
+  doubled.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'review-card';
+    el.innerHTML = `
+      <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <div class="review-text">"${r.text}"</div>
+      <div class="review-author">
+        <div class="review-avatar">${r.name[0]}</div>
+        <div><div class="review-name">${r.name}</div><div class="review-date">${r.date}</div></div>
+      </div>`;
+    track.appendChild(el);
+  });
+}
+renderReviews();
+
+// INTERSECTION OBSERVER
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.offer-card,.menu-item').forEach(el => observer.observe(el));
+
+// LOGIN
+document.getElementById('openLogin').addEventListener('click', e => {
+  e.preventDefault();
+  document.getElementById('login-overlay').classList.add('open');
+});
+document.getElementById('closeLogin').addEventListener('click', () => {
+  document.getElementById('login-overlay').classList.remove('open');
+});
+document.getElementById('login-overlay').addEventListener('click', e => {
+  if(e.target === document.getElementById('login-overlay'))
+    document.getElementById('login-overlay').classList.remove('open');
+});
+document.getElementById('tab-login').addEventListener('click', () => {
+  document.getElementById('tab-login').classList.add('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  document.getElementById('login-btn-text').textContent = 'Login';
+});
+document.getElementById('tab-signup').addEventListener('click', () => {
+  document.getElementById('tab-signup').classList.add('active');
+  document.getElementById('tab-login').classList.remove('active');
+  document.getElementById('login-btn-text').textContent = 'Create Account';
+});
+</script>
+</body>
+</html>
